@@ -4,8 +4,9 @@ PWA de finanzas personales con clasificación híbrida (reglas locales + IA), si
 
 [![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://spendy.vercel.app)
 [![Stack](https://img.shields.io/badge/stack-FastAPI%20%7C%20React%20%7C%20PostgreSQL-blue)](#stack-tecnológico)
+[![Landing](https://img.shields.io/badge/showcase-landing%20page-indigo)](https://franco-bertotti.github.io/spendy-showcase)
 
-> **Acceso demo:** el registro está controlado. Para probar la app con una cuenta de prueba, contactame en [LinkedIn](https://linkedin.com/in/YOUR_LINKEDIN_PROFILE).
+> **Acceso demo:** el registro está controlado por lista blanca. Para probar la app con una cuenta de prueba, contactame en [LinkedIn](https://www.linkedin.com/in/franco-bertotti/).
 
 ---
 
@@ -73,9 +74,9 @@ El clasificador local resuelve la mayoría de los casos sin costo y sin latencia
 - **vite-plugin-pwa** + **Workbox** — PWA instalable
 
 ### Infraestructura
-- **Vercel** — frontend
-- **Render** — backend
-- **Neon** — PostgreSQL gestionado
+- **Vercel** — frontend (main → prod, staging → preview)
+- **Render** — backend (web service, deploy por rama)
+- **Supabase** — PostgreSQL gestionado
 - **Cloudflare** — dominio y DNS
 
 ---
@@ -100,7 +101,7 @@ El clasificador local resuelve la mayoría de los casos sin costo y sin latencia
 └──────────────┬──────────────────────────────┘
                │ psycopg2 / SQLAlchemy
 ┌──────────────▼──────────────────────────────┐
-│         POSTGRESQL (Neon)                    │
+│         POSTGRESQL (Supabase)                │
 │  usuarios · transacciones · categorias       │
 │  presupuestos · cierres_mes · lista_blanca   │
 └─────────────────────────────────────────────┘
@@ -127,12 +128,37 @@ El clasificador local resuelve la mayoría de los casos sin costo y sin latencia
 
 ---
 
+## Decisiones técnicas
+
+Ver [`docs/architecture-decisions.md`](docs/architecture-decisions.md) para los ADRs del proyecto:
+
+- ADR-01: Clasificación local antes de delegar a IA (costo/latencia)
+- ADR-02: Registro por lista blanca en lugar de registro abierto
+- ADR-03: SQLAlchemy síncrono sobre async
+- ADR-04: Supabase como PostgreSQL gestionado
+- ADR-05: Dos entornos `main` → prod / `staging` → test
+
+Ver [`docs/deployment-flow.md`](docs/deployment-flow.md) para el flujo completo de infraestructura y variables de entorno.
+
+---
+
 ## Snippets de implementación
 
 Los archivos en [`snippets/`](snippets/) muestran fragmentos seleccionados del código real:
 
-- [`classifier_excerpt.py`](snippets/classifier_excerpt.py) — el motor de clasificación local: extracción de monto, detección de tipo y matching por categoría
-- [`ai_parser_excerpt.py`](snippets/ai_parser_excerpt.py) — el orquestador híbrido que decide cuándo usar reglas locales y cuándo delegar a la IA
+**Backend**
+- [`classifier_excerpt.py`](snippets/backend/classifier_excerpt.py) — motor de clasificación local: extracción de monto, detección de tipo y matching por categoría
+- [`ai_parser_excerpt.py`](snippets/backend/ai_parser_excerpt.py) — orquestador híbrido: decide cuándo usar reglas locales y cuándo delegar a la IA
+- [`security_excerpt.py`](snippets/backend/security_excerpt.py) — JWT, bcrypt y dependencias FastAPI (`get_current_user`, `require_superadmin`)
+- [`admin_router_excerpt.py`](snippets/backend/admin_router_excerpt.py) — router del panel admin: whitelist, usuarios y categorías
+
+**Frontend**
+- [`AuthContext_excerpt.tsx`](snippets/frontend/AuthContext_excerpt.tsx) — estado global de auth, `isSuperAdmin` derivado, re-validación de sesión
+- [`AdminRoute_excerpt.tsx`](snippets/frontend/AdminRoute_excerpt.tsx) — guard de ruta React Router v7
+
+**Infraestructura**
+- [`Dockerfile`](snippets/infra/Dockerfile) — imagen del backend
+- [`docker-compose.yml`](snippets/infra/docker-compose.yml) — stack local de desarrollo
 
 ---
 
@@ -140,7 +166,7 @@ Los archivos en [`snippets/`](snippets/) muestran fragmentos seleccionados del c
 
 Para acceder a una cuenta demo o consultas sobre el proyecto:
 
-**[Franco Bertotti en LinkedIn](https://linkedin.com/in/YOUR_LINKEDIN_PROFILE)**
+**[Franco Bertotti en LinkedIn](https://www.linkedin.com/in/franco-bertotti/)**
 
 ---
 

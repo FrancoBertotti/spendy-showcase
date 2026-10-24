@@ -1,0 +1,757 @@
+<title>Spendy</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,600;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+
+<style>
+/* ─── Design tokens ─── dark-first ─── */
+:root {
+  --bg:       #0b0d12;
+  --bg2:      #111420;
+  --bg3:      #181c28;
+  --surface:  #1e2233;
+  --border:   #2a304a;
+  --muted:    #8b93b0;
+  --fg:       #e8ecf5;
+  --fg2:      #c4cad9;
+  --accent:   #6c72f5;
+  --accent2:  #8f6cf5;
+  --gold:     #f0b429;
+  --green:    #3dd68c;
+  --red:      #f56565;
+
+  --font-display: 'Bricolage Grotesque', 'Georgia', serif;
+  --font-body:    'DM Sans', system-ui, sans-serif;
+
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg:      #f5f6fb;
+    --bg2:     #edf0f9;
+    --bg3:     #e4e8f5;
+    --surface: #ffffff;
+    --border:  #d0d5ea;
+    --muted:   #6b7394;
+    --fg:      #141728;
+    --fg2:     #3a405c;
+    --accent:  #4f55e0;
+    --accent2: #7c53e0;
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg:      #f5f6fb;
+  --bg2:     #edf0f9;
+  --bg3:     #e4e8f5;
+  --surface: #ffffff;
+  --border:  #d0d5ea;
+  --muted:   #6b7394;
+  --fg:      #141728;
+  --fg2:     #3a405c;
+  --accent:  #4f55e0;
+  --accent2: #7c53e0;
+  color-scheme: light;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0;
+}
+
+/* ─── Layout ─── */
+.container { max-width: 960px; margin: 0 auto; }
+.section { padding-block: 80px; }
+.section + .section { border-top: 1px solid var(--border); }
+
+/* ─── Typography ─── */
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; }
+h1 { font-size: clamp(2.6rem, 6vw, 4.2rem); font-weight: 800; line-height: 1.05; letter-spacing: -0.03em; }
+h2 { font-size: clamp(1.5rem, 3.5vw, 2.2rem); font-weight: 700; letter-spacing: -0.02em; }
+h3 { font-size: 1.1rem; font-weight: 600; }
+p  { color: var(--fg2); }
+.eyebrow {
+  font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 12px;
+}
+
+/* ─── Navbar ─── */
+nav {
+  position: sticky; top: env(safe-area-inset-top, 0px);
+  z-index: 50;
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg) 85%, transparent);
+  backdrop-filter: blur(12px);
+}
+.nav-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  max-width: 960px; margin: 0 auto;
+  padding: 14px max(16px, env(safe-area-inset-left, 0px));
+}
+.nav-logo { font-family: var(--font-display); font-weight: 800; font-size: 1.15rem; color: var(--fg); text-decoration: none; }
+.nav-links { display: flex; gap: 24px; list-style: none; padding: 0; }
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.9rem; transition: color .2s; }
+.nav-links a:hover { color: var(--fg); }
+@media (max-width: 600px) { .nav-links { display: none; } }
+
+/* ─── Hero ─── */
+.hero { padding-block: 100px 80px; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  border-radius: 100px; padding: 5px 14px;
+  font-size: 0.8rem; color: var(--accent); font-weight: 500; margin-bottom: 28px;
+}
+.hero-badge .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+.hero h1 { max-width: 760px; margin-bottom: 24px; }
+.hero h1 span { color: var(--accent); }
+.hero-sub { font-size: 1.1rem; max-width: 540px; line-height: 1.7; margin-bottom: 36px; }
+.hero-ctas { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--accent); color: #fff;
+  padding: 13px 24px; border-radius: 10px;
+  font-weight: 600; font-size: 0.95rem; text-decoration: none; transition: opacity .2s, transform .15s;
+}
+.btn-primary:hover { opacity: .88; transform: translateY(-1px); }
+.btn-ghost {
+  display: inline-flex; align-items: center; gap: 8px;
+  color: var(--fg2); padding: 13px 20px; border-radius: 10px;
+  font-weight: 500; font-size: 0.95rem; text-decoration: none;
+  border: 1px solid var(--border); transition: border-color .2s, color .2s;
+}
+.btn-ghost:hover { border-color: var(--muted); color: var(--fg); }
+
+/* ─── Stats strip ─── */
+.stats {
+  display: flex; flex-wrap: wrap; gap: 2px;
+  border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
+  margin-top: 64px;
+}
+.stat {
+  flex: 1 1 180px; padding: 24px 28px;
+  background: var(--surface);
+}
+.stat-num { font-size: 2rem; font-weight: 800; font-family: var(--font-display); font-variant-numeric: tabular-nums; color: var(--fg); }
+.stat-label { font-size: 0.82rem; color: var(--muted); margin-top: 4px; }
+
+/* ─── Pipeline ─── */
+.pipeline-wrap { overflow-x: auto; }
+.pipeline {
+  display: flex; align-items: stretch; gap: 0;
+  min-width: 600px; margin-top: 40px;
+}
+.pipe-node {
+  flex: 1; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 24px 20px; text-align: center; position: relative;
+}
+.pipe-node h3 { font-size: 0.95rem; margin-bottom: 6px; }
+.pipe-node p { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
+.pipe-arrow {
+  display: flex; align-items: center; justify-content: center;
+  width: 40px; flex-shrink: 0; color: var(--muted);
+}
+.pipe-split {
+  display: flex; flex-direction: column; gap: 8px; flex: 1;
+}
+.pipe-outcome {
+  flex: 1; background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 12px; padding: 18px 16px; text-align: center;
+}
+.pipe-outcome h3 { font-size: 0.85rem; }
+.pipe-outcome p { font-size: 0.78rem; color: var(--muted); }
+.badge-local {
+  display: inline-block; background: color-mix(in srgb, var(--green) 15%, transparent);
+  color: var(--green); border-radius: 6px; padding: 2px 8px; font-size: 0.72rem; font-weight: 600; margin-bottom: 8px;
+}
+.badge-ai {
+  display: inline-block; background: color-mix(in srgb, var(--accent) 15%, transparent);
+  color: var(--accent); border-radius: 6px; padding: 2px 8px; font-size: 0.72rem; font-weight: 600; margin-bottom: 8px;
+}
+
+/* ─── Stack grid ─── */
+.stack-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-top: 36px; }
+.stack-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  padding: 20px; transition: border-color .2s;
+}
+.stack-card:hover { border-color: var(--accent); }
+.stack-card .layer { font-size: 0.7rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+.stack-card h3 { font-size: 1rem; margin-bottom: 4px; }
+.stack-card p { font-size: 0.82rem; color: var(--muted); }
+
+/* ─── Security grid ─── */
+.security-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; margin-top: 36px; }
+.sec-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px;
+}
+.sec-icon { font-size: 1.4rem; margin-bottom: 10px; }
+.sec-card h3 { font-size: 0.95rem; margin-bottom: 6px; }
+.sec-card p { font-size: 0.82rem; color: var(--muted); line-height: 1.55; }
+
+/* ─── Snippet tabs ─── */
+.snippet-tabs { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 36px; }
+.tab-btn {
+  padding: 8px 16px; border-radius: 8px; font-size: 0.82rem; font-weight: 500; font-family: var(--font-body);
+  background: transparent; border: 1px solid var(--border); color: var(--muted); cursor: pointer; transition: all .2s;
+}
+.tab-btn:hover { color: var(--fg); border-color: var(--muted); }
+.tab-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.snippet-panel { display: none; margin-top: 16px; }
+.snippet-panel.active { display: block; }
+.snippet-meta { font-size: 0.78rem; color: var(--muted); margin-bottom: 8px; font-family: 'SF Mono', 'Fira Code', monospace; }
+.code-wrap {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 12px;
+  overflow-x: auto;
+}
+.code-wrap pre { margin: 0; padding: 24px; font-size: 0.82rem; line-height: 1.65; }
+
+/* ─── Prism theme (dark, inlined) ─── */
+code[class*="language-"], pre[class*="language-"] {
+  color: #cdd6f4; background: none; font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+}
+.token.comment  { color: #6c7086; font-style: italic; }
+.token.string   { color: #a6e3a1; }
+.token.number   { color: #fab387; }
+.token.keyword  { color: #cba6f7; }
+.token.operator { color: #89dceb; }
+.token.function { color: #89b4fa; }
+.token.class-name { color: #f9e2af; }
+.token.decorator { color: #f38ba8; }
+.token.builtin  { color: #94e2d5; }
+.token.punctuation { color: #9399b2; }
+.token.parameter { color: #cdd6f4; }
+
+/* ─── Deploy section ─── */
+.env-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 36px; }
+@media (max-width: 600px) { .env-row { grid-template-columns: 1fr; } }
+.env-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px; position: relative; overflow: hidden;
+}
+.env-card::before {
+  content: ''; position: absolute; inset: 0 0 auto; height: 3px;
+}
+.env-prod::before { background: linear-gradient(90deg, var(--green), var(--accent)); }
+.env-staging::before { background: linear-gradient(90deg, var(--gold), var(--accent2)); }
+.env-label {
+  display: inline-block; font-size: 0.7rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  padding: 3px 10px; border-radius: 6px; margin-bottom: 14px;
+}
+.env-prod .env-label { background: color-mix(in srgb, var(--green) 15%, transparent); color: var(--green); }
+.env-staging .env-label { background: color-mix(in srgb, var(--gold) 15%, transparent); color: var(--gold); }
+.env-services { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+.svc { display: flex; align-items: center; gap: 10px; font-size: 0.86rem; }
+.svc-name { color: var(--muted); min-width: 84px; font-size: 0.78rem; }
+.svc-val { color: var(--fg); font-family: 'SF Mono','Fira Code',monospace; font-size: 0.82rem; }
+
+/* ─── CTA ─── */
+.cta-wrap {
+  text-align: center; padding-block: 80px;
+  background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--accent) 6%, transparent) 60%, transparent);
+}
+.cta-wrap h2 { margin-bottom: 16px; }
+.cta-wrap p { margin-bottom: 32px; }
+
+/* ─── Footer ─── */
+footer {
+  border-top: 1px solid var(--border); padding-block: 32px;
+  text-align: center; font-size: 0.82rem; color: var(--muted);
+}
+
+/* ─── Animations ─── */
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:.4} }
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none} }
+.hero h1, .hero-sub, .hero-ctas { animation: fadeUp .6s ease both; }
+.hero-sub { animation-delay: .1s; }
+.hero-ctas { animation-delay: .2s; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+</style>
+
+<!-- ─────────────────────────── NAV ─────────────────────────── -->
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="#">Spendy</a>
+    <ul class="nav-links">
+      <li><a href="#pipeline">Pipeline</a></li>
+      <li><a href="#stack">Stack</a></li>
+      <li><a href="#seguridad">Seguridad</a></li>
+      <li><a href="#snippets">Código</a></li>
+      <li><a href="#deploy">Deploy</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ─────────────────────────── HERO ─────────────────────────── -->
+<section class="hero section">
+  <div class="container">
+    <div class="hero-badge">
+      <span class="dot"></span>
+      Demo en vivo disponible
+    </div>
+    <h1>Finanzas personales<br>con <span>clasificación híbrida</span></h1>
+    <p class="hero-sub">
+      PWA que convierte texto natural en transacciones categorizadas.
+      Motor local de reglas + LLM como fallback — sin latencia innecesaria, sin costos redundantes.
+    </p>
+    <div class="hero-ctas">
+      <a class="btn-primary" href="https://www.linkedin.com/in/franco-bertotti/" target="_blank" rel="noopener">
+        Contactarme para acceso ↗
+      </a>
+      <a class="btn-ghost" href="https://spendy.practical.com.ar" target="_blank" rel="noopener">
+        Ver la app ↗
+      </a>
+      <a class="btn-ghost" href="https://github.com/FrancoBertotti/spendy-showcase" target="_blank" rel="noopener">
+        GitHub showcase
+      </a>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-num">7</div>
+        <div class="stat-label">módulos FastAPI</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">50/30/20</div>
+        <div class="stat-label">regla financiera integrada</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">2</div>
+        <div class="stat-label">entornos (prod + staging)</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">PWA</div>
+        <div class="stat-label">instalable en móvil</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────── PIPELINE ─────────────────────────── -->
+<section class="section" id="pipeline">
+  <div class="container">
+    <p class="eyebrow">Clasificación híbrida</p>
+    <h2>Motor local primero,<br>IA como fallback</h2>
+    <p style="margin-top:12px;max-width:560px">
+      El clasificador local resuelve ~70 % de los casos sin llamadas externas.
+      Solo los textos ambiguos se envían a Groq, con fallback automático entre modelos.
+    </p>
+
+    <div class="pipeline-wrap">
+      <div class="pipeline">
+        <div class="pipe-node">
+          <h3>Texto del usuario</h3>
+          <p style="font-family:'SF Mono','Fira Code',monospace;font-size:.82rem;color:var(--accent);margin-top:8px">"pagué 5000 de alquiler"</p>
+        </div>
+
+        <div class="pipe-arrow">→</div>
+
+        <div class="pipe-node">
+          <h3>Clasificador local</h3>
+          <p>Regex + diccionario de keywords por categoría. Sin I/O externa.</p>
+        </div>
+
+        <div class="pipe-arrow">→</div>
+
+        <div class="pipe-split">
+          <div class="pipe-outcome">
+            <div class="badge-local">Match local</div>
+            <h3>Resultado inmediato</h3>
+            <p>Monto · tipo · pilar · categoría</p>
+          </div>
+          <div class="pipe-outcome">
+            <div class="badge-ai">Texto ambiguo</div>
+            <h3>Groq API</h3>
+            <p>JSON estructurado con fallback entre modelos</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────── STACK ─────────────────────────── -->
+<section class="section" id="stack">
+  <div class="container">
+    <p class="eyebrow">Tecnologías</p>
+    <h2>Stack completo</h2>
+
+    <div class="stack-grid">
+      <div class="stack-card">
+        <div class="layer">Backend</div>
+        <h3>FastAPI</h3>
+        <p>Framework HTTP async, 7 módulos, Pydantic v2 para validación</p>
+      </div>
+      <div class="stack-card">
+        <div class="layer">ORM</div>
+        <h3>SQLAlchemy 2.0</h3>
+        <p>Modo síncrono, modelos tipados, transacciones explícitas</p>
+      </div>
+      <div class="stack-card">
+        <div class="layer">Base de datos</div>
+        <h3>PostgreSQL</h3>
+        <p>Supabase gestionado, backups automáticos, sin ops</p>
+      </div>
+      <div class="stack-card">
+        <div class="layer">IA</div>
+        <h3>Groq API</h3>
+        <p>Fallback entre modelos (qwen3, gpt-oss). JSON structured output</p>
+      </div>
+      <div class="stack-card">
+        <div class="layer">Frontend</div>
+        <h3>React 19 + TS</h3>
+        <p>Vite 8, React Router v7, TailwindCSS v4</p>
+      </div>
+      <div class="stack-card">
+        <div class="layer">Mobile</div>
+        <h3>PWA</h3>
+        <p>vite-plugin-pwa + Workbox, instalable en iOS/Android</p>
+      </div>
+      <div class="stack-card">
+        <div class="layer">Autenticación</div>
+        <h3>JWT HS256</h3>
+        <p>python-jose, 7 días de expiración, bcrypt para passwords</p>
+      </div>
+      <div class="stack-card">
+        <div class="layer">Infraestructura</div>
+        <h3>Vercel + Render</h3>
+        <p>Deploy automático por rama, Cloudflare para dominio y DNS</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────── SEGURIDAD ─────────────────────────── -->
+<section class="section" id="seguridad">
+  <div class="container">
+    <p class="eyebrow">Seguridad</p>
+    <h2>Decisiones de seguridad</h2>
+
+    <div class="security-grid">
+      <div class="sec-card">
+        <div class="sec-icon">🔐</div>
+        <h3>IDOR corregido</h3>
+        <p><code>usuario_id</code> siempre se extrae del token JWT, nunca de path params ni del body. El usuario no puede leer datos de otros.</p>
+      </div>
+      <div class="sec-card">
+        <div class="sec-icon">📋</div>
+        <h3>Whitelist de emails</h3>
+        <p>El registro está bloqueado para emails no autorizados. Solo el superadmin puede agregar emails a la lista blanca.</p>
+      </div>
+      <div class="sec-card">
+        <div class="sec-icon">🛡️</div>
+        <h3>require_superadmin</h3>
+        <p>Dependencia FastAPI que compone sobre <code>get_current_user</code> y protege todos los endpoints <code>/admin/*</code> con un solo <code>Depends()</code>.</p>
+      </div>
+      <div class="sec-card">
+        <div class="sec-icon">🔑</div>
+        <h3>bcrypt + JWT HS256</h3>
+        <p>Passwords hasheados con passlib[bcrypt]. Tokens con 7 días de expiración, firmados con <code>SECRET_KEY</code> en variables de entorno.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────── SNIPPETS ─────────────────────────── -->
+<section class="section" id="snippets">
+  <div class="container">
+    <p class="eyebrow">Código seleccionado</p>
+    <h2>Extractos del repo privado</h2>
+    <p style="margin-top:12px;max-width:500px">Fragmentos representativos. La lógica propietaria (diccionarios de clasificación, reglas de negocio) no se incluye.</p>
+
+    <div class="snippet-tabs">
+      <button class="tab-btn active" data-tab="classifier">classifier.py</button>
+      <button class="tab-btn" data-tab="security">security.py</button>
+      <button class="tab-btn" data-tab="ratelimit">rate limiting</button>
+      <button class="tab-btn" data-tab="admin">admin router</button>
+      <button class="tab-btn" data-tab="authctx">AuthContext.tsx</button>
+      <button class="tab-btn" data-tab="adminroute">AdminRoute.tsx</button>
+    </div>
+
+    <div class="snippet-panel active" id="tab-classifier">
+      <p class="snippet-meta">snippets/backend/classifier_excerpt.py — motor de clasificación local</p>
+      <div class="code-wrap"><pre><code class="language-python">def _extraer_monto(texto: str) -> Optional[float]:
+    """Extrae el primer monto numérico encontrado en el texto."""
+    m = _PATRON_MONTO.search(texto)
+    if not m:
+        return None
+    entero = m.group(1).replace(".", "")
+    decimal = m.group(2) if m.group(2) else "0"
+    valor = float(f"{entero}.{decimal}")
+    return valor if valor > 0 else None
+
+
+def clasificar(texto: str) -> Optional[ClasificacionLocal]:
+    """
+    Intenta clasificar el texto usando solo reglas locales.
+    Retorna None si el texto es ambiguo → delega a la IA.
+    """
+    texto_limpio = texto.lower().strip()
+
+    monto = _extraer_monto(texto_limpio)
+    if monto is None:
+        return None  # Sin monto claro → delegar a IA
+
+    tipo = _detectar_tipo(texto_limpio)
+    categoria = _detectar_categoria(texto_limpio, tipo)
+
+    # Texto elaborado sin categoría → delegar a IA
+    if categoria is None and len(texto_limpio.split()) > 3:
+        return None
+
+    categoria_final = categoria or "Varios"
+    pilar = CATEGORIA_A_PILAR.get(categoria_final, "estilo_vida")
+
+    return ClasificacionLocal(
+        monto=monto, tipo=tipo, pilar=pilar,
+        categoria=categoria_final,
+        descripcion=texto.strip().capitalize(),
+    )</code></pre></div>
+    </div>
+
+    <div class="snippet-panel" id="tab-security">
+      <p class="snippet-meta">snippets/backend/security_excerpt.py — JWT + dependencias FastAPI</p>
+      <div class="code-wrap"><pre><code class="language-python">bearer_scheme = HTTPBearer()
+
+def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
+    db: Session = Depends(get_db),
+) -> Usuario:
+    token = credentials.credentials
+    try:
+        payload = jwt.decode(
+            token, settings.SECRET_KEY,
+            algorithms=[settings.ALGORITHM]
+        )
+        user_id: int = int(payload.get("sub"))
+    except (JWTError, TypeError, ValueError):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token inválido o expirado",
+        )
+
+    user = db.query(Usuario).filter(Usuario.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+    if not user.is_active:
+        raise HTTPException(status_code=403, detail="Cuenta desactivada")
+    return user
+
+
+def require_superadmin(
+    current_user: Usuario = Depends(get_current_user)
+) -> Usuario:
+    """Guard para todos los endpoints /admin/*."""
+    if current_user.role != "superadmin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Acceso restringido a superadministradores",
+        )
+    return current_user</code></pre></div>
+    </div>
+
+    <div class="snippet-panel" id="tab-ratelimit">
+      <p class="snippet-meta">snippets/backend/rate_limiting_excerpt.py — protección contra fuerza bruta en login</p>
+      <div class="code-wrap"><pre><code class="language-python">from slowapi import Limiter
+from slowapi.util import get_remote_address
+
+limiter = Limiter(key_func=get_remote_address)
+router = APIRouter(prefix="/auth", tags=["Auth"])
+
+
+@router.post("/login")
+@limiter.limit("10/minute")
+async def login(
+    request: Request,
+    credentials: LoginPayload,
+    db: Session = Depends(get_db),
+):
+    user = authenticate_user(db, credentials.email, credentials.password)
+    if not user:
+        raise HTTPException(status_code=401, detail="Credenciales inválidas")
+    token = create_access_token(subject=user.id)
+    return {"access_token": token, "token_type": "bearer", "user": user}
+
+
+# En main.py:
+# app.state.limiter = limiter
+# app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)</code></pre></div>
+    </div>
+
+    <div class="snippet-panel" id="tab-admin">
+      <p class="snippet-meta">snippets/backend/admin_router_excerpt.py — whitelist + gestión de usuarios</p>
+      <div class="code-wrap"><pre><code class="language-python">router = APIRouter(prefix="/admin", tags=["SuperAdmin"])
+
+# Todos los endpoints usan require_superadmin como guard.
+
+@router.get("/whitelist", response_model=List[schemas.ListaBlancaResponse])
+def listar_whitelist(
+    db: Session = Depends(get_db),
+    _: Usuario = Depends(require_superadmin),
+):
+    return services.listar_lista_blanca(db)
+
+
+@router.post("/whitelist", response_model=schemas.ListaBlancaResponse, status_code=201)
+def agregar_whitelist(
+    data: schemas.ListaBlancaCreate,
+    db: Session = Depends(get_db),
+    current_user: Usuario = Depends(require_superadmin),
+):
+    return services.agregar_a_lista_blanca(db, data, current_user.id)
+
+
+@router.patch("/users/{user_id}/role", response_model=schemas.UsuarioAdminResponse)
+def cambiar_role(
+    user_id: int,
+    data: schemas.UsuarioRoleUpdate,
+    db: Session = Depends(get_db),
+    _: Usuario = Depends(require_superadmin),
+):
+    return services.actualizar_role(db, user_id, data)</code></pre></div>
+    </div>
+
+    <div class="snippet-panel" id="tab-authctx">
+      <p class="snippet-meta">snippets/frontend/AuthContext_excerpt.tsx — estado global de autenticación</p>
+      <div class="code-wrap"><pre><code class="language-typescript">export const AuthProvider: FC&lt;{ children: ReactNode }&gt; = ({ children }) => {
+  const [user, setUser] = useState&lt;User | null&gt;(null);
+  const [token, setToken] = useState&lt;string | null&gt;(
+    localStorage.getItem("token")
+  );
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Derivados — sin estado extra ni sincronización manual.
+  const isAuthenticated = !!token;
+  const isSuperAdmin = user?.role === "superadmin";
+
+  // Re-valida la sesión al montar. Si el backend devuelve 401 → logout.
+  useEffect(() => {
+    const initAuth = async () => {
+      if (token) {
+        try {
+          const userData = await authService.getMe();
+          setUser(userData);
+        } catch {
+          logout();
+        }
+      }
+      setIsLoading(false);
+    };
+    initAuth();
+  }, [token]);
+
+  // ...login, register, logout expuestos en el contexto
+};</code></pre></div>
+    </div>
+
+    <div class="snippet-panel" id="tab-adminroute">
+      <p class="snippet-meta">snippets/frontend/AdminRoute_excerpt.tsx — guard de ruta React Router v7</p>
+      <div class="code-wrap"><pre><code class="language-typescript">export function AdminRoute() {
+  const { isAuthenticated, isSuperAdmin, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      &lt;div className="flex items-center justify-center min-h-screen"&gt;
+        &lt;div className="w-8 h-8 border-4 border-indigo-500
+                        border-t-transparent rounded-full animate-spin" /&gt;
+      &lt;/div&gt;
+    );
+  }
+
+  // Doble guard: auth + rol.
+  if (!isAuthenticated) return &lt;Navigate to="/login" replace /&gt;;
+  if (!isSuperAdmin)    return &lt;Navigate to="/dashboard" replace /&gt;;
+
+  return &lt;Outlet /&gt;;
+}</code></pre></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────── DEPLOY ─────────────────────────── -->
+<section class="section" id="deploy">
+  <div class="container">
+    <p class="eyebrow">Infraestructura</p>
+    <h2>Dos entornos, deploy automático</h2>
+    <p style="margin-top:12px;max-width:520px">
+      Cada push a <code>main</code> o <code>staging</code> dispara un deploy automático en los tres servicios.
+      El entorno de staging tiene su propia base de datos, lo que permite probar migraciones de esquema antes de producción.
+    </p>
+
+    <div class="env-row">
+      <div class="env-card env-prod">
+        <div class="env-label">Producción</div>
+        <div style="font-family:'SF Mono','Fira Code',monospace;font-size:.85rem;color:var(--accent);margin-bottom:12px">branch: main</div>
+        <div class="env-services">
+          <div class="svc"><span class="svc-name">Frontend</span><span class="svc-val">Vercel (dominio propio)</span></div>
+          <div class="svc"><span class="svc-name">Backend</span><span class="svc-val">Render web service</span></div>
+          <div class="svc"><span class="svc-name">Base de datos</span><span class="svc-val">Supabase prod</span></div>
+          <div class="svc"><span class="svc-name">DNS</span><span class="svc-val">Cloudflare</span></div>
+        </div>
+      </div>
+
+      <div class="env-card env-staging">
+        <div class="env-label">Staging</div>
+        <div style="font-family:'SF Mono','Fira Code',monospace;font-size:.85rem;color:var(--gold);margin-bottom:12px">branch: staging</div>
+        <div class="env-services">
+          <div class="svc"><span class="svc-name">Frontend</span><span class="svc-val">Vercel preview URL</span></div>
+          <div class="svc"><span class="svc-name">Backend</span><span class="svc-val">Render service staging</span></div>
+          <div class="svc"><span class="svc-name">Base de datos</span><span class="svc-val">Supabase staging</span></div>
+          <div class="svc"><span class="svc-name">Uso</span><span class="svc-val">QA + migraciones de BD</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────── CTA ─────────────────────────── -->
+<section class="cta-wrap">
+  <div class="container">
+    <p class="eyebrow">Contacto</p>
+    <h2>¿Querés ver la app en acción?</h2>
+    <p>El registro está controlado por lista blanca. Escribime y te agrego una cuenta demo.</p>
+    <div class="hero-ctas" style="justify-content:center">
+      <a class="btn-primary" href="https://www.linkedin.com/in/franco-bertotti/" target="_blank" rel="noopener">
+        Contactarme en LinkedIn ↗
+      </a>
+      <a class="btn-ghost" href="https://spendy.practical.com.ar" target="_blank" rel="noopener">
+        Ver la app ↗
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    Franco Bertotti · Practical Thinking · 2024
+  </div>
+</footer>
+
+<script>
+  // Tab logic
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tab = btn.dataset.tab;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.snippet-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + tab).classList.add('active');
+    });
+  });
+</script>
