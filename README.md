@@ -4,7 +4,7 @@ PWA de finanzas personales con clasificación híbrida (reglas locales + IA), si
 
 [![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://spendy.vercel.app)
 [![Stack](https://img.shields.io/badge/stack-FastAPI%20%7C%20React%20%7C%20PostgreSQL-blue)](#stack-tecnológico)
-[![Landing](https://img.shields.io/badge/showcase-landing%20page-indigo)](https://franco-bertotti.github.io/spendy-showcase)
+[![Landing](https://img.shields.io/badge/showcase-landing%20page-indigo)](https://francobertotti.github.io/spendy-showcase)
 
 > **Acceso demo:** el registro está controlado por lista blanca. Para probar la app con una cuenta de prueba, contactame en [LinkedIn](https://www.linkedin.com/in/franco-bertotti/).
 
