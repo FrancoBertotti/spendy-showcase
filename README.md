@@ -2,7 +2,7 @@
 
 PWA de finanzas personales con clasificación híbrida (reglas locales + IA), sistema de roles y acceso controlado por lista blanca.
 
-[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://spendy.vercel.app)
+[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://spendy.practical.com.ar)
 [![Stack](https://img.shields.io/badge/stack-FastAPI%20%7C%20React%20%7C%20PostgreSQL-blue)](#stack-tecnológico)
 [![Landing](https://img.shields.io/badge/showcase-landing%20page-indigo)](https://francobertotti.github.io/spendy-showcase)
 
