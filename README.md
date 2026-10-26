@@ -12,11 +12,18 @@ PWA de finanzas personales con clasificación híbrida (reglas locales + IA), si
 
 ## Screenshots
 
-<!-- Reemplazar con screenshots reales -->
-
-| Dashboard | Carga de transacción | Panel admin |
-|-----------|----------------------|-------------|
-| ![Dashboard](assets/screenshot-dashboard.png) | ![Carga](assets/screenshot-carga.png) | ![Admin](assets/screenshot-admin.png) |
+<table>
+  <tr>
+    <th align="center">Dashboard</th>
+    <th align="center">Carga de transacción</th>
+    <th align="center">Panel admin</th>
+  </tr>
+  <tr>
+    <td valign="top" align="center"><img src="assets/screenshots/2.jpeg" width="260" alt="Dashboard"></td>
+    <td valign="top" align="center"><img src="assets/screenshots/5.jpeg" width="260" alt="Carga de transacción"></td>
+    <td valign="top" align="center"><img src="assets/screenshots/13.jpeg" width="260" alt="Panel admin"></td>
+  </tr>
+</table>
 
 <!-- Demo en video -->
 <!-- ![Demo](assets/demo.gif) -->
@@ -170,4 +177,11 @@ Para acceder a una cuenta demo o consultas sobre el proyecto:
 
 ---
 
-*Franco Bertotti — Practical Thinking*
+## Autor
+
+**Franco Bertotti** — Practical Thinking Dev
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-franco--bertotti-0A66C2?style=flat-square&logo=linkedin)](https://www.linkedin.com/in/franco-bertotti/)
+[![Web](https://img.shields.io/badge/Web-practical.com.ar-000000?style=flat-square&logo=firefox)](https://practical.com.ar)
+[![Email](https://img.shields.io/badge/Email-francob1997%40gmail.com-D14836?style=flat-square&logo=gmail&logoColor=white)](mailto:francob1997@gmail.com)
+
